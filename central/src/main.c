@@ -12,6 +12,8 @@
 #include <zephyr/net/buf.h>
 #include <zephyr/sys/printk.h>
 #include <zephyr/logging/log.h>
+#include <zephyr/drivers/gpio.h>
+#include <zephyr/timing/types.h>
 
 #include <zephyr/bluetooth/ead.h>
 #include <zephyr/bluetooth/att.h>
@@ -84,8 +86,8 @@ int notifyCount = 0;
 uint64_t notifyTimes[notifyMaxCount];
 bool validNotify = false;
 
-//By looking at hardware there are two GPIO: GPIO1 and GPIO2
-//Pins are depending on GPIO. In this example there is P1.15 used. It means GPIO1 and PIN 15
+// By looking at hardware there are two GPIO: GPIO1 and GPIO2
+// Pins are depending on GPIO. In this example there is P1.15 used. It means GPIO1 and PIN 15
 #define GPIO1_LABEL "GPIO_1"
 #define GPIO1_PIN15 15
 const struct device *gpio1pin15;
@@ -107,39 +109,46 @@ const struct device *gpio1pin12;
 static struct gpio_callback gpio1pin12_cb_data;
 
 // Pin configuration to get signal from peripheral and later start counting time
-const struct device * configurePin(const char * label, gpio_pin_t pin, gpio_flags_t flags)
+const struct device *configurePin(const char *label, gpio_pin_t pin, gpio_flags_t flags)
 {
 	const struct device *dev;
 	int ret;
 
 	dev = device_get_binding(label);
-	if (dev == NULL) {
-		if (debug == true) printk("Failed to bind gpio1pin15\n");
+	if (dev == NULL)
+	{
+		if (debug == true)
+			printk("Failed to bind gpio1pin15\n");
 		return NULL;
 	}
 
 	ret = gpio_pin_configure(dev, pin, flags);
-	if (ret < 0) {
-		if (debug == true) printk("Failed to configure gpio1pin15\n");
+	if (ret < 0)
+	{
+		if (debug == true)
+			printk("Failed to configure gpio1pin15\n");
 		return NULL;
 	}
 
 	ret = gpio_pin_interrupt_configure(dev, pin, GPIO_INT_EDGE_TO_ACTIVE);
-	if (ret < 0) {
-		if (debug == true) printk("Failed to configure gpio1pin15 interrupt\n");
+	if (ret < 0)
+	{
+		if (debug == true)
+			printk("Failed to configure gpio1pin15 interrupt\n");
 		return NULL;
 	}
 
 	return dev;
 }
 
-//This callback only launches on pin high state and starts counting time
+// This callback only launches on pin high state and starts counting time
 void gpio1pinCallback(const struct device *dev, struct gpio_callback *cb, uint32_t pins)
-{	
+{
 	int ret;
 	ret = gpio_pin_get(gpio1pin15, GPIO1_PIN15);
 
- 	if (debug == true) printk("Pin 15 received data at %" PRIu32 " data: %d\n", k_cycle_get_32(), ret);
+	if (debug == true)
+		printk("Pin 15 received data at %" PRIu32 " data: %d\n", k_cycle_get_32(), ret);
 
 	validNotify = true;
 	timing_start();
@@ -177,8 +186,7 @@ static struct bt_gatt_subscribe_params subscribe_params;
 static void start_scan(void);
 static uint8_t read_func_cb_sc2(struct bt_conn *conn, uint8_t err, struct bt_gatt_read_params *params, const void *data, uint16_t length);
 
-
-//This function filters for correct device: connectable, in close proximity and with correct hardcoded address
+// This function filters for correct device: connectable, in close proximity and with correct hardcoded address
 static void device_found(const bt_addr_le_t *addr, int8_t rssi, uint8_t type,
 						 struct net_buf_simple *ad)
 {
@@ -191,13 +199,14 @@ static void device_found(const bt_addr_le_t *addr, int8_t rssi, uint8_t type,
 
 	/* We're only interested in connectable events */
 	if (type != BT_GAP_ADV_TYPE_ADV_IND &&
-	type != BT_GAP_ADV_TYPE_ADV_DIRECT_IND)
+		type != BT_GAP_ADV_TYPE_ADV_DIRECT_IND)
 	{
 		return;
 	}
 
 	bt_addr_le_to_str(addr, addr_str, sizeof(addr_str));
-	if (debug == true) printk("Device found: %s (RSSI %d)\n", addr_str, rssi);
+	if (debug == true)
+		printk("Device found: %s (RSSI %d)\n", addr_str, rssi);
 
 	/* connect only to devices in close proximity */
 	if (rssi < -90)
@@ -237,12 +246,13 @@ static void device_found(const bt_addr_le_t *addr, int8_t rssi, uint8_t type,
 								BT_LE_CONN_PARAM_DEFAULT, &default_conn);
 	if (err)
 	{
-		if (debug == true) printk("Create conn to %s failed (%u)\n", addr_str, err);
+		if (debug == true)
+			printk("Create conn to %s failed (%u)\n", addr_str, err);
 		start_scan();
 	}
 }
 
-//Basic function to start scanning. On device found it will use device_found callback.
+// Basic function to start scanning. On device found it will use device_found callback.
 static void start_scan(void)
 {
 	int err;
@@ -257,29 +267,34 @@ static void start_scan(void)
 	err = bt_le_scan_start(&scan_param, device_found);
 	if (err)
 	{
-		if (debug == true) printk("Scanning failed to start (err %d)\n", err);
+		if (debug == true)
+			printk("Scanning failed to start (err %d)\n", err);
 		return;
 	}
 
-	if (debug == true) printk("\nScanning successfully started\n");
+	if (debug == true)
+		printk("\nScanning successfully started\n");
 }
 
 static void write_func_cb(struct bt_conn *conn, uint8_t err,
-		    struct bt_gatt_write_params *params)
+						  struct bt_gatt_write_params *params)
 {
-	if (err) {
-		if (debug == true) printk("Failed to write (err %d)\n", err);
+	if (err)
+	{
+		if (debug == true)
+			printk("Failed to write (err %d)\n", err);
 	}
 	else
 	{
-		if (debug == true) printk("Scenario initialized\n");
+		if (debug == true)
+			printk("Scenario initialized\n");
 	}
 
 	return;
 }
 
 static void writeScenarioIdx(struct bt_conn *conn, uint16_t handle)
-{	
+{
 	int err;
 
 	struct bt_gatt_write_params write_params;
@@ -290,10 +305,13 @@ static void writeScenarioIdx(struct bt_conn *conn, uint16_t handle)
 	write_params.length = sizeof(scenarioIdx);
 	err = bt_gatt_write(conn, &write_params);
 
-	if (err) {
-		if (debug == true) printk("Write param failed (err %d)\n", err);
+	if (err)
+	{
+		if (debug == true)
+			printk("Write param failed (err %d)\n", err);
 
-		if (debug == true) printk("Disconnecting because of failed scenario init (write param)\n");
+		if (debug == true)
+			printk("Disconnecting because of failed scenario init (write param)\n");
 		bt_conn_disconnect(conn, BT_HCI_ERR_REMOTE_USER_TERM_CONN);
 	}
 
@@ -311,11 +329,15 @@ static void read(struct bt_conn *conn)
 	read_params.by_uuid.end_handle = BT_ATT_LAST_ATTTRIBUTE_HANDLE;
 	read_params.by_uuid.uuid = BT_UUID_PERIPHERAL_READ;
 	err = bt_gatt_read(conn, &read_params);
-	if (err) {
-		if (debug == true) printk("Read param failed (err %d)\n", err);
+	if (err)
+	{
+		if (debug == true)
+			printk("Read param failed (err %d)\n", err);
 	}
-	else{
-		if (debug == true) printk("Read param successful \n");
+	else
+	{
+		if (debug == true)
+			printk("Read param successful \n");
 	}
 }
 
@@ -324,18 +346,24 @@ static uint8_t read_func_cb_sc2(struct bt_conn *conn, uint8_t err, struct bt_gat
 	// End of experiment 2
 	end_time = timing_counter_get();
 	readTimes[readCount] = timing_cycles_to_ns(timing_cycles_get(&start_time, &end_time));
-	
-    if ((data != NULL) && (err == 0))
-    {
+
+	if ((data != NULL) && (err == 0))
+	{
 		uint8_t *d = (uint8_t *)data;
-		if (debug == true) printk("length: %2x data:", length);
-		for (int i =0; i < length; i++){
-			if (debug == true) printk("%2x ", d[i]);
+		if (debug == true)
+			printk("length: %2x data:", length);
+		for (int i = 0; i < length; i++)
+		{
+			if (debug == true)
+				printk("%2x ", d[i]);
 		}
-		if (debug == true) printk("\n");
-    }
-	else{
-		if (debug == true) printk("No data\n");
+		if (debug == true)
+			printk("\n");
+	}
+	else
+	{
+		if (debug == true)
+			printk("No data\n");
 	}
 
 	char addr[BT_ADDR_LE_STR_LEN];
@@ -346,12 +374,14 @@ static uint8_t read_func_cb_sc2(struct bt_conn *conn, uint8_t err, struct bt_gat
 	if (readCount >= readMaxCount)
 	{
 		readCount = 0;
-		if (debug == true) printk("Scenario 2 ended for peripheral: %s\n", addressArr[addressIdx]);
+		if (debug == true)
+			printk("Scenario 2 ended for peripheral: %s\n", addressArr[addressIdx]);
 		SendUartData(readTimes, readMaxCount);
 
 		addressIdx += 1;
 
-		if (debug == true) printk("Disconnecting (expected for scenario 2)\n");
+		if (debug == true)
+			printk("Disconnecting (expected for scenario 2)\n");
 		bt_conn_disconnect(conn, BT_HCI_ERR_REMOTE_USER_TERM_CONN);
 
 		if (addressIdx >= n_array)
@@ -361,22 +391,24 @@ static uint8_t read_func_cb_sc2(struct bt_conn *conn, uint8_t err, struct bt_gat
 		}
 	}
 
-	//Sleep for 100 ms to avoid overspam
+	// Sleep for 100 ms to avoid overspam
 	k_msleep(100);
 	start_time = timing_counter_get();
 	read(conn);
 
-    return BT_GATT_ITER_STOP;
+	return BT_GATT_ITER_STOP;
 }
 
 static uint8_t notify_func(struct bt_conn *conn,
-			   struct bt_gatt_subscribe_params *params,
-			   const void *data, uint16_t length)
-{	
+						   struct bt_gatt_subscribe_params *params,
+						   const void *data, uint16_t length)
+{
 	uint32_t data_raw;
 
-	if (!data) {
-		if (debug == true) printk("[UNSUBSCRIBED] no data\n");
+	if (!data)
+	{
+		if (debug == true)
+			printk("[UNSUBSCRIBED] no data\n");
 		params->value_handle = 0U;
 
 		return BT_GATT_ITER_STOP;
@@ -384,32 +416,40 @@ static uint8_t notify_func(struct bt_conn *conn,
 
 	/* data value display */
 	data_raw = sys_le32_to_cpu(*(uint32_t *)data);
-	
+
 	if (scenarioIdx == 3)
 	{
 		if (ackIndicate == false)
 		{
 			// End of experiment 3 with no ACK
-			if (debug == true) printk("Getting indication 1\n");
+			if (debug == true)
+				printk("Getting indication 1\n");
 			ackIndicate = true;
 		}
-		else {
+		else
+		{
 			// End of experiment 3 with ACK
 			indicateTimes[indicateCount] = data_raw;
 
-			if (debug == true) printk("Getting indication 2 (ACK information)\n");
-			if (debug == true) printk("Spent time indicating (ACK): ");
-			if (debug == true) printk("%d", data_raw);
-			if (debug == true) printk("\n");
+			if (debug == true)
+				printk("Getting indication 2 (ACK information)\n");
+			if (debug == true)
+				printk("Spent time indicating (ACK): ");
+			if (debug == true)
+				printk("%d", data_raw);
+			if (debug == true)
+				printk("\n");
 
 			if (scenarioIdx == 3)
 			{
-				if (debug == true) printk("Indicate count is %d.\n", indicateCount);
+				if (debug == true)
+					printk("Indicate count is %d.\n", indicateCount);
 				indicateCount++;
 				if (indicateCount >= indicateMaxCount)
 				{
 					indicateCount = 0;
-					if (debug == true) printk("Scenario 3 ended for peripheral: %s\n", addressArr[addressIdx]);
+					if (debug == true)
+						printk("Scenario 3 ended for peripheral: %s\n", addressArr[addressIdx]);
 					SendUartData(indicateTimes, indicateMaxCount);
 					addressIdx += 1;
 
@@ -419,14 +459,15 @@ static uint8_t notify_func(struct bt_conn *conn,
 						scenarioIdx++;
 					}
 
-					if (debug == true) printk("Disconnecting (expected for scenario 3)\n");
+					if (debug == true)
+						printk("Disconnecting (expected for scenario 3)\n");
 					bt_conn_disconnect(conn, BT_HCI_ERR_REMOTE_USER_TERM_CONN);
 				}
 			}
 			ackIndicate = false;
 		}
 	}
-	
+
 	if (scenarioIdx == 4)
 	{
 		// End of experiment 4
@@ -435,17 +476,22 @@ static uint8_t notify_func(struct bt_conn *conn,
 			end_time = timing_counter_get();
 			notifyTimes[notifyCount] = timing_cycles_to_ns(timing_cycles_get(&start_time, &end_time));
 			validNotify = false;
-			
-			if (debug == true) printk("Spent time notifyng (no ACK): ");
-			if (debug == true) printk("%s", convertUint64ToStr(notifyTimes[notifyCount]));
-			if (debug == true) printk("\n");
 
-			if (debug == true) printk("Notify count is %d.\n", notifyCount);
+			if (debug == true)
+				printk("Spent time notifyng (no ACK): ");
+			if (debug == true)
+				printk("%s", convertUint64ToStr(notifyTimes[notifyCount]));
+			if (debug == true)
+				printk("\n");
+
+			if (debug == true)
+				printk("Notify count is %d.\n", notifyCount);
 			notifyCount++;
 			if (notifyCount >= notifyMaxCount)
 			{
 				notifyCount = 0;
-				if (debug == true) printk("Scenario 4 ended for peripheral: %s\n", addressArr[addressIdx]);
+				if (debug == true)
+					printk("Scenario 4 ended for peripheral: %s\n", addressArr[addressIdx]);
 				SendUartData(notifyTimes, notifyMaxCount);
 				addressIdx += 1;
 
@@ -455,7 +501,8 @@ static uint8_t notify_func(struct bt_conn *conn,
 					scenarioIdx = 1;
 				}
 
-				if (debug == true) printk("Disconnecting (expected for scenario 4)\n");
+				if (debug == true)
+					printk("Disconnecting (expected for scenario 4)\n");
 				bt_conn_disconnect(conn, BT_HCI_ERR_REMOTE_USER_TERM_CONN);
 			}
 		}
@@ -464,20 +511,22 @@ static uint8_t notify_func(struct bt_conn *conn,
 }
 
 static uint8_t discover_func(struct bt_conn *conn,
-			     const struct bt_gatt_attr *attr,
-			     struct bt_gatt_discover_params *params)
+							 const struct bt_gatt_attr *attr,
+							 struct bt_gatt_discover_params *params)
 {
 	int err;
 
-	if (!attr) {
-		if (debug == true) printk("Discover complete\n");
+	if (!attr)
+	{
+		if (debug == true)
+			printk("Discover complete\n");
 		(void)memset(params, 0, sizeof(*params));
 		return BT_GATT_ITER_STOP;
 	}
 
-	if (debug == true) printk("[ATTRIBUTE] handle %u\n", attr->handle);
+	if (debug == true)
+		printk("[ATTRIBUTE] handle %u\n", attr->handle);
 
-	
 	if (scenarioIdx == 2)
 	{
 		timing_start();
@@ -485,28 +534,33 @@ static uint8_t discover_func(struct bt_conn *conn,
 		start_time = timing_counter_get();
 
 		read(conn);
-	} 
-	
+	}
+
 	if (scenarioIdx == 1)
 	{
-		if (debug == true) printk("Disconnecting (expected for scenario 1/2)\n");
+		if (debug == true)
+			printk("Disconnecting (expected for scenario 1/2)\n");
 		bt_conn_disconnect(conn, BT_HCI_ERR_REMOTE_USER_TERM_CONN);
 	}
 
 	if (scenarioIdx == 3)
 	{
-		if (!bt_uuid_cmp(discover_params.uuid, BT_UUID_READ_WRITE_SERVICE)) {
+		if (!bt_uuid_cmp(discover_params.uuid, BT_UUID_READ_WRITE_SERVICE))
+		{
 			memcpy(&uuid, BT_UUID_PERIPHERAL_INDICATE, sizeof(uuid));
 			discover_params.uuid = &uuid.uuid;
 			discover_params.start_handle = attr->handle + 1;
 			discover_params.type = BT_GATT_DISCOVER_CHARACTERISTIC;
 
 			err = bt_gatt_discover(conn, &discover_params);
-			if (err) {
-				if (debug == true) printk("Discover failed (err %d)\n", err);
+			if (err)
+			{
+				if (debug == true)
+					printk("Discover failed (err %d)\n", err);
 			}
 		}
-		else if (!bt_uuid_cmp(discover_params.uuid, BT_UUID_PERIPHERAL_INDICATE)) {
+		else if (!bt_uuid_cmp(discover_params.uuid, BT_UUID_PERIPHERAL_INDICATE))
+		{
 			memcpy(&uuid, BT_UUID_GATT_CCC, sizeof(uuid));
 			discover_params.uuid = &uuid.uuid;
 			discover_params.start_handle = attr->handle + 2;
@@ -514,21 +568,30 @@ static uint8_t discover_func(struct bt_conn *conn,
 			subscribe_params.value_handle = bt_gatt_attr_value_handle(attr);
 
 			err = bt_gatt_discover(conn, &discover_params);
-			if (err) {
-				if (debug == true) printk("Discover failed (err %d)\n", err);
+			if (err)
+			{
+				if (debug == true)
+					printk("Discover failed (err %d)\n", err);
 			}
 		}
-		else {
+		else
+		{
 			subscribe_params.notify = notify_func;
 			subscribe_params.value = BT_GATT_CCC_INDICATE;
 			subscribe_params.ccc_handle = attr->handle;
 
 			err = bt_gatt_subscribe(conn, &subscribe_params);
-			if (err && err != -EALREADY) {
-				if (debug == true) printk("Subscribe failed (err %d)\n", err);
-			} else {
-				if (debug == true) printk("[SUBSCRIBED INDICATE]\n");
-				if (debug == true) printk("Writing scenario to peripheral\n");
+			if (err && err != -EALREADY)
+			{
+				if (debug == true)
+					printk("Subscribe failed (err %d)\n", err);
+			}
+			else
+			{
+				if (debug == true)
+					printk("[SUBSCRIBED INDICATE]\n");
+				if (debug == true)
+					printk("Writing scenario to peripheral\n");
 				writeScenarioIdx(conn, write_handle);
 			}
 
@@ -538,18 +601,22 @@ static uint8_t discover_func(struct bt_conn *conn,
 
 	if (scenarioIdx == 4)
 	{
-		if (!bt_uuid_cmp(discover_params.uuid, BT_UUID_READ_WRITE_SERVICE)) {
+		if (!bt_uuid_cmp(discover_params.uuid, BT_UUID_READ_WRITE_SERVICE))
+		{
 			memcpy(&uuid, BT_UUID_PERIPHERAL_NOTIFY, sizeof(uuid));
 			discover_params.uuid = &uuid.uuid;
 			discover_params.start_handle = attr->handle + 1;
 			discover_params.type = BT_GATT_DISCOVER_CHARACTERISTIC;
 
 			err = bt_gatt_discover(conn, &discover_params);
-			if (err) {
-				if (debug == true) printk("Discover failed (err %d)\n", err);
+			if (err)
+			{
+				if (debug == true)
+					printk("Discover failed (err %d)\n", err);
 			}
 		}
-		else if (!bt_uuid_cmp(discover_params.uuid, BT_UUID_PERIPHERAL_NOTIFY)) {
+		else if (!bt_uuid_cmp(discover_params.uuid, BT_UUID_PERIPHERAL_NOTIFY))
+		{
 			memcpy(&uuid, BT_UUID_GATT_CCC, sizeof(uuid));
 			discover_params.uuid = &uuid.uuid;
 			discover_params.start_handle = attr->handle + 2;
@@ -557,21 +624,30 @@ static uint8_t discover_func(struct bt_conn *conn,
 			subscribe_params.value_handle = bt_gatt_attr_value_handle(attr);
 
 			err = bt_gatt_discover(conn, &discover_params);
-			if (err) {
-				if (debug == true) printk("Discover failed (err %d)\n", err);
+			if (err)
+			{
+				if (debug == true)
+					printk("Discover failed (err %d)\n", err);
 			}
 		}
-		else {
+		else
+		{
 			subscribe_params.notify = notify_func;
 			subscribe_params.value = BT_GATT_CCC_NOTIFY;
 			subscribe_params.ccc_handle = attr->handle;
 
 			err = bt_gatt_subscribe(conn, &subscribe_params);
-			if (err && err != -EALREADY) {
-				if (debug == true) printk("Subscribe failed (err %d)\n", err);
-			} else {
-				if (debug == true) printk("[SUBSCRIBED NOTIFY]\n");
-				if (debug == true) printk("Writing scenario to peripheral\n");
+			if (err && err != -EALREADY)
+			{
+				if (debug == true)
+					printk("Subscribe failed (err %d)\n", err);
+			}
+			else
+			{
+				if (debug == true)
+					printk("[SUBSCRIBED NOTIFY]\n");
+				if (debug == true)
+					printk("Writing scenario to peripheral\n");
 				writeScenarioIdx(conn, write_handle);
 			}
 
@@ -583,31 +659,37 @@ static uint8_t discover_func(struct bt_conn *conn,
 }
 
 static uint8_t discover_write_characteristic_func(struct bt_conn *conn,
-			     const struct bt_gatt_attr *attr,
-			     struct bt_gatt_discover_params *params)
+												  const struct bt_gatt_attr *attr,
+												  struct bt_gatt_discover_params *params)
 {
 	int err;
 
-	if (!attr) {
-		if (debug == true) printk("Discover complete\n");
+	if (!attr)
+	{
+		if (debug == true)
+			printk("Discover complete\n");
 		(void)memset(params, 0, sizeof(*params));
 		return BT_GATT_ITER_STOP;
 	}
 
-	if (debug == true) printk("[ATTRIBUTE] handle %u\n", attr->handle);
+	if (debug == true)
+		printk("[ATTRIBUTE] handle %u\n", attr->handle);
 
 	if (write_handle_found == false)
 	{
 		// For all scenarios write scenario idx to peripheral
-		if (!bt_uuid_cmp(discover_params.uuid, BT_UUID_READ_WRITE_SERVICE)) {
+		if (!bt_uuid_cmp(discover_params.uuid, BT_UUID_READ_WRITE_SERVICE))
+		{
 			memcpy(&uuid, BT_UUID_PERIPHERAL_WRITE, sizeof(uuid));
 			discover_params.uuid = &uuid.uuid;
 			discover_params.start_handle = attr->handle + 1;
 			discover_params.type = BT_GATT_DISCOVER_CHARACTERISTIC;
 
 			err = bt_gatt_discover(conn, &discover_params);
-			if (err) {
-				if (debug == true) printk("Discover failed (err %d)\n", err);
+			if (err)
+			{
+				if (debug == true)
+					printk("Discover failed (err %d)\n", err);
 			}
 		}
 		else
@@ -615,9 +697,11 @@ static uint8_t discover_write_characteristic_func(struct bt_conn *conn,
 			write_handle = attr->handle + 1;
 			write_handle_found = true;
 
-			if (debug == true) printk("Found write handle %d\n", write_handle);
+			if (debug == true)
+				printk("Found write handle %d\n", write_handle);
 
-			if (debug == true) printk("Rediscover service, but this time go for scenarios\n");
+			if (debug == true)
+				printk("Rediscover service, but this time go for scenarios\n");
 			memcpy(&uuid, BT_UUID_READ_WRITE_SERVICE, sizeof(uuid));
 			discover_params.uuid = &uuid.uuid;
 			discover_params.func = discover_func;
@@ -626,8 +710,10 @@ static uint8_t discover_write_characteristic_func(struct bt_conn *conn,
 			discover_params.type = BT_GATT_DISCOVER_PRIMARY;
 
 			err = bt_gatt_discover(conn, &discover_params);
-			if (err) {
-				if (debug == true) printk("Discover failed(err %d)\n", err);
+			if (err)
+			{
+				if (debug == true)
+					printk("Discover failed(err %d)\n", err);
 				return;
 			}
 		}
@@ -647,19 +733,25 @@ static void connected(struct bt_conn *conn, uint8_t err)
 
 	char addr[BT_ADDR_LE_STR_LEN];
 	bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
-	if (debug == true) printk("Connected: %s\n", addr);
+	if (debug == true)
+		printk("Connected: %s\n", addr);
 
 	if (scenarioIdx == 1)
 	{
-		if (debug == true) printk("Spent time connecting: ");
-		if (debug == true) printk("%s", convertUint64ToStr(connectionTimes[connectionCount]));
-		if (debug == true) printk("\n");
-		if (debug == true) printk("Connection count %d\n", connectionCount);
+		if (debug == true)
+			printk("Spent time connecting: ");
+		if (debug == true)
+			printk("%s", convertUint64ToStr(connectionTimes[connectionCount]));
+		if (debug == true)
+			printk("\n");
+		if (debug == true)
+			printk("Connection count %d\n", connectionCount);
 	}
 
 	if (err)
 	{
-		if (debug == true) printk("Failed to connect to %s (%u)\n", addr, err);
+		if (debug == true)
+			printk("Failed to connect to %s (%u)\n", addr, err);
 
 		bt_conn_unref(default_conn);
 		default_conn = NULL;
@@ -672,30 +764,33 @@ static void connected(struct bt_conn *conn, uint8_t err)
 	{
 		return;
 	}
-	
-	//After connection initiate service discovery
-	if (conn == default_conn) {
+
+	// After connection initiate service discovery
+	if (conn == default_conn)
+	{
 		memcpy(&uuid, BT_UUID_READ_WRITE_SERVICE, sizeof(uuid));
 		discover_params.uuid = &uuid.uuid;
 
-		//First time find write handle for later
+		// First time find write handle for later
 		if (write_handle_found == false)
 		{
 			discover_params.func = discover_write_characteristic_func;
 		}
 		else if (write_handle_found == true)
 		{
-			//Next iterations focus on scenarios
+			// Next iterations focus on scenarios
 			discover_params.func = discover_func;
 		}
-		
+
 		discover_params.start_handle = BT_ATT_FIRST_ATTTRIBUTE_HANDLE;
 		discover_params.end_handle = BT_ATT_LAST_ATTTRIBUTE_HANDLE;
 		discover_params.type = BT_GATT_DISCOVER_PRIMARY;
 
 		err = bt_gatt_discover(conn, &discover_params);
-		if (err) {
-			if (debug == true) printk("Discover failed(err %d)\n", err);
+		if (err)
+		{
+			if (debug == true)
+				printk("Discover failed(err %d)\n", err);
 			return;
 		}
 	}
@@ -712,7 +807,8 @@ static void disconnected(struct bt_conn *conn, uint8_t reason)
 
 	bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
 
-	if (debug == true) printk("Disconnected: %s (reason 0x%02x)\n", addr, reason);
+	if (debug == true)
+		printk("Disconnected: %s (reason 0x%02x)\n", addr, reason);
 
 	bt_conn_unref(default_conn);
 	default_conn = NULL;
@@ -724,7 +820,8 @@ static void disconnected(struct bt_conn *conn, uint8_t reason)
 		if (connectionCount >= connectionMaxCount)
 		{
 			connectionCount = 0;
-			if (debug == true) printk("Scenario 1 ended for peripheral: %s\n", addressArr[addressIdx]);
+			if (debug == true)
+				printk("Scenario 1 ended for peripheral: %s\n", addressArr[addressIdx]);
 			SendUartData(connectionTimes, connectionMaxCount);
 			addressIdx += 1;
 
@@ -735,7 +832,7 @@ static void disconnected(struct bt_conn *conn, uint8_t reason)
 			}
 		}
 
-		//Sleep for 100ms to not overspam with connections
+		// Sleep for 100ms to not overspam with connections
 		k_msleep(100);
 	}
 
@@ -744,12 +841,11 @@ static void disconnected(struct bt_conn *conn, uint8_t reason)
 	start_scan();
 }
 
-//Basic define which determines which function will be called on connection and disconnection
+// Basic define which determines which function will be called on connection and disconnection
 BT_CONN_CB_DEFINE(conn_callbacks) = {
 	.connected = connected,
 	.disconnected = disconnected,
 };
-
 
 void readCb()
 {
@@ -761,49 +857,52 @@ void configurePins()
 	gpio1pin15 = configurePin(GPIO1_LABEL, GPIO1_PIN15, GPIO_INPUT);
 	if (gpio1pin15 == NULL)
 	{
-		if (debug == true) printk("Failed to initialize gpio1pin15");
+		if (debug == true)
+			printk("Failed to initialize gpio1pin15");
 		return;
-	} 
+	}
 
 	gpio_init_callback(&gpio1pin15_cb_data, gpio1pinCallback, BIT(GPIO1_PIN15));
- 	gpio_add_callback(gpio1pin15, &gpio1pin15_cb_data);
+	gpio_add_callback(gpio1pin15, &gpio1pin15_cb_data);
 
-	// 
+	//
 
 	gpio1pin14 = configurePin(GPIO1_LABEL, GPIO1_PIN14, GPIO_INPUT);
 	if (gpio1pin14 == NULL)
 	{
-		if (debug == true) printk("Failed to initialize gpio1pin14");
+		if (debug == true)
+			printk("Failed to initialize gpio1pin14");
 		return;
-	} 
+	}
 
 	gpio_init_callback(&gpio1pin14_cb_data, gpio1pinCallback, BIT(GPIO1_PIN14));
- 	gpio_add_callback(gpio1pin14, &gpio1pin14_cb_data);
+	gpio_add_callback(gpio1pin14, &gpio1pin14_cb_data);
 
-	// 
+	//
 
 	gpio1pin13 = configurePin(GPIO1_LABEL, GPIO1_PIN13, GPIO_INPUT);
 	if (gpio1pin13 == NULL)
 	{
-		if (debug == true) printk("Failed to initialize gpio1pin13");
+		if (debug == true)
+			printk("Failed to initialize gpio1pin13");
 		return;
-	} 
+	}
 
 	gpio_init_callback(&gpio1pin13_cb_data, gpio1pinCallback, BIT(GPIO1_PIN13));
- 	gpio_add_callback(gpio1pin13, &gpio1pin13_cb_data);
+	gpio_add_callback(gpio1pin13, &gpio1pin13_cb_data);
 
-	// 
+	//
 
 	gpio1pin12 = configurePin(GPIO1_LABEL, GPIO1_PIN12, GPIO_INPUT);
 	if (gpio1pin12 == NULL)
 	{
-		if (debug == true) printk("Failed to initialize gpio1pin13");
+		if (debug == true)
+			printk("Failed to initialize gpio1pin13");
 		return;
-	} 
+	}
 
 	gpio_init_callback(&gpio1pin12_cb_data, gpio1pinCallback, BIT(GPIO1_PIN12));
- 	gpio_add_callback(gpio1pin12, &gpio1pin12_cb_data);
-
+	gpio_add_callback(gpio1pin12, &gpio1pin12_cb_data);
 }
 void main(void)
 {
@@ -817,11 +916,13 @@ void main(void)
 	err = bt_enable(NULL);
 	if (err)
 	{
-		if (debug == true) printk("Bluetooth init failed (err %d)\n", err);
+		if (debug == true)
+			printk("Bluetooth init failed (err %d)\n", err);
 		return;
 	}
 
-	if (debug == true) printk("Bluetooth initialized\n");
+	if (debug == true)
+		printk("Bluetooth initialized\n");
 
 	start_scan();
 }
