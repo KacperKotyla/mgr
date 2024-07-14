@@ -1,4 +1,3 @@
-C:\Users\Mis\.zephyr_ide\toolchains\zephyr-sdk-0.16.6\cmake\zephyr\Kconfig
 C:\Users\Mis\Desktop\test2\central\build\nucleo_wb55rg\Kconfig\Kconfig.dts
 C:\Users\Mis\Desktop\test2\central\build\nucleo_wb55rg\Kconfig\Kconfig.modules
 C:\Users\Mis\Desktop\test2\central\build\nucleo_wb55rg\Kconfig\Kconfig.shield
@@ -2392,3 +2391,4 @@ C:\Users\Mis\Desktop\test2\external\zephyr\subsys\usb\device_next\class\Kconfig.
 C:\Users\Mis\Desktop\test2\external\zephyr\subsys\usb\host\Kconfig
 C:\Users\Mis\Desktop\test2\external\zephyr\subsys\usb\usb_c\Kconfig
 C:\Users\Mis\Desktop\test2\external\zephyr\subsys\zbus\Kconfig
+C:\Users\Mis\zephyr-sdk-0.16.5-1\cmake\zephyr\Kconfig
