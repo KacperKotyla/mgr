@@ -163,6 +163,9 @@ C:/Users/Mis/Desktop/test2/central/build/nucleo_wb55rg/zephyr/subsys/net/lib/CMa
 C:/Users/Mis/Desktop/test2/central/build/nucleo_wb55rg/zephyr/subsys/net/lib/CMakeFiles/rebuild_cache.dir
 C:/Users/Mis/Desktop/test2/central/build/nucleo_wb55rg/zephyr/subsys/net/lib/utils/CMakeFiles/edit_cache.dir
 C:/Users/Mis/Desktop/test2/central/build/nucleo_wb55rg/zephyr/subsys/net/lib/utils/CMakeFiles/rebuild_cache.dir
+C:/Users/Mis/Desktop/test2/central/build/nucleo_wb55rg/zephyr/subsys/timing/CMakeFiles/subsys__timing.dir
+C:/Users/Mis/Desktop/test2/central/build/nucleo_wb55rg/zephyr/subsys/timing/CMakeFiles/edit_cache.dir
+C:/Users/Mis/Desktop/test2/central/build/nucleo_wb55rg/zephyr/subsys/timing/CMakeFiles/rebuild_cache.dir
 C:/Users/Mis/Desktop/test2/central/build/nucleo_wb55rg/zephyr/drivers/CMakeFiles/edit_cache.dir
 C:/Users/Mis/Desktop/test2/central/build/nucleo_wb55rg/zephyr/drivers/CMakeFiles/rebuild_cache.dir
 C:/Users/Mis/Desktop/test2/central/build/nucleo_wb55rg/zephyr/drivers/disk/CMakeFiles/edit_cache.dir

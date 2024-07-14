@@ -6,6 +6,7 @@
 
 #include <stdint.h>
 #include <string.h>
+#include <stddef.h>
 
 #include <zephyr/kernel.h>
 
@@ -13,7 +14,13 @@
 #include <zephyr/sys/printk.h>
 #include <zephyr/logging/log.h>
 #include <zephyr/drivers/gpio.h>
-#include <zephyr/timing/types.h>
+// #include <zephyr/timing/types.h>
+#include <zephyr/timing/timing.h>
+#include <zephyr/sys/byteorder.h>
+
+#include <zephyr/toolchain.h>
+#include <zephyr/types.h>
+#include <zephyr/sys/__assert.h>
 
 #include <zephyr/bluetooth/ead.h>
 #include <zephyr/bluetooth/att.h>
