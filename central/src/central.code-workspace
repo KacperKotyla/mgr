@@ -18,9 +18,7 @@
 						"westBuildArgs": "",
 						"westBuildCMakeArgs": " -DCONFIG_DEBUG_OPTIMIZATIONS=y -DCONFIG_DEBUG_THREAD_INFO=y ",
 						"confFiles": {
-							"config": [
-								"central\\prj.conf"
-							],
+							"config": [],
 							"extraConfig": [],
 							"overlay": [],
 							"extraOverlay": []
@@ -52,7 +50,11 @@
 			"toolchain.h": "c",
 			"buf.h": "c",
 			"printk.h": "c",
-			"gpio.h": "c"
+			"gpio.h": "c",
+			"__assert.h": "c",
+			"gpio_stm32.h": "c",
+			"timing.h": "c",
+			"soc.h": "c"
 		}
 	}
 }

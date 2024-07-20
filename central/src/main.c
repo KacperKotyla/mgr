@@ -7,14 +7,14 @@
 #include <stdint.h>
 #include <string.h>
 #include <stddef.h>
-
+// #include <zephyr/devicetree.h>
 #include <zephyr/kernel.h>
 
 #include <zephyr/net/buf.h>
 #include <zephyr/sys/printk.h>
 #include <zephyr/logging/log.h>
 #include <zephyr/drivers/gpio.h>
-// #include <zephyr/timing/types.h>
+#include <zephyr/bluetooth/hci_types.h>
 #include <zephyr/timing/timing.h>
 #include <zephyr/sys/byteorder.h>
 
@@ -22,19 +22,24 @@
 #include <zephyr/types.h>
 #include <zephyr/sys/__assert.h>
 
+#include <soc.h>
+// #include <stm32_ll_bar.h>
+
+#include <zephyr/bluetooth/att.h>
 #include <zephyr/bluetooth/ead.h>
 #include <zephyr/bluetooth/att.h>
+#include <zephyr/bluetooth/gap.h>
 #include <zephyr/bluetooth/gatt.h>
 #include <zephyr/bluetooth/addr.h>
 #include <zephyr/bluetooth/conn.h>
 #include <zephyr/bluetooth/uuid.h>
 #include <zephyr/bluetooth/bluetooth.h>
 
-bool debug = false;
+bool debug = true;
 
 // Peripherals P1 P2 P3 P4
 const char *addressArr[] = {
-	"C8:08:67:10:6A:25",
+	"02:80:E1:00:00:00",
 	"F7:3E:E2:EA:4B:AC",
 	"F5:E6:A8:F0:CC:21",
 	"EE:FC:B1:9C:E3:A2",
