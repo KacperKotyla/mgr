@@ -1,0 +1,41 @@
+{
+    "zephyr-ide.projects": {
+        "central": {
+            "rel_path": "central",
+            "name": "central",
+            "buildConfigs": {
+                "build\\nucleo_wb55rg": {
+                    "relBoardDir": "external\\zephyr\\boards",
+                    "board": "nucleo_wb55rg",
+                    "relBoardSubDir": "c:\\Users\\Mis\\test123\\external\\zephyr\\boards\\arm\\nucleo_wb55rg",
+                    "name": "build\\nucleo_wb55rg",
+                    "westBuildArgs": "",
+                    "westBuildCMakeArgs": " -DCONFIG_DEBUG_OPTIMIZATIONS=y -DCONFIG_DEBUG_THREAD_INFO=y ",
+                    "confFiles": {
+                        "config": [],
+                        "extraConfig": [
+                            "central\\prj.conf"
+                        ],
+                        "overlay": [],
+                        "extraOverlay": []
+                    },
+                    "runners": {
+                        "stm32cubeprogrammer": {
+                            "runner": "stm32cubeprogrammer",
+                            "name": "stm32cubeprogrammer",
+                            "args": ""
+                        }
+                    },
+                    "activeRunner": "stm32cubeprogrammer"
+                }
+            },
+            "confFiles": {
+                "config": [],
+                "extraConfig": [],
+                "overlay": [],
+                "extraOverlay": []
+            },
+            "activeBuildConfig": "build\\nucleo_wb55rg"
+        }
+    }
+}
