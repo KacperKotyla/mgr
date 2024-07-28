@@ -151,6 +151,9 @@ C:/Users/Mis/test123/central/build/nucleo_wb55rg/zephyr/subsys/bluetooth/host/CM
 C:/Users/Mis/test123/central/build/nucleo_wb55rg/zephyr/subsys/bluetooth/host/CMakeFiles/rebuild_cache.dir
 C:/Users/Mis/test123/central/build/nucleo_wb55rg/zephyr/subsys/bluetooth/services/CMakeFiles/edit_cache.dir
 C:/Users/Mis/test123/central/build/nucleo_wb55rg/zephyr/subsys/bluetooth/services/CMakeFiles/rebuild_cache.dir
+C:/Users/Mis/test123/central/build/nucleo_wb55rg/zephyr/subsys/bluetooth/crypto/CMakeFiles/subsys__bluetooth__crypto.dir
+C:/Users/Mis/test123/central/build/nucleo_wb55rg/zephyr/subsys/bluetooth/crypto/CMakeFiles/edit_cache.dir
+C:/Users/Mis/test123/central/build/nucleo_wb55rg/zephyr/subsys/bluetooth/crypto/CMakeFiles/rebuild_cache.dir
 C:/Users/Mis/test123/central/build/nucleo_wb55rg/zephyr/subsys/bluetooth/lib/CMakeFiles/edit_cache.dir
 C:/Users/Mis/test123/central/build/nucleo_wb55rg/zephyr/subsys/bluetooth/lib/CMakeFiles/rebuild_cache.dir
 C:/Users/Mis/test123/central/build/nucleo_wb55rg/zephyr/subsys/net/CMakeFiles/subsys__net.dir
@@ -160,6 +163,9 @@ C:/Users/Mis/test123/central/build/nucleo_wb55rg/zephyr/subsys/net/lib/CMakeFile
 C:/Users/Mis/test123/central/build/nucleo_wb55rg/zephyr/subsys/net/lib/CMakeFiles/rebuild_cache.dir
 C:/Users/Mis/test123/central/build/nucleo_wb55rg/zephyr/subsys/net/lib/utils/CMakeFiles/edit_cache.dir
 C:/Users/Mis/test123/central/build/nucleo_wb55rg/zephyr/subsys/net/lib/utils/CMakeFiles/rebuild_cache.dir
+C:/Users/Mis/test123/central/build/nucleo_wb55rg/zephyr/subsys/timing/CMakeFiles/subsys__timing.dir
+C:/Users/Mis/test123/central/build/nucleo_wb55rg/zephyr/subsys/timing/CMakeFiles/edit_cache.dir
+C:/Users/Mis/test123/central/build/nucleo_wb55rg/zephyr/subsys/timing/CMakeFiles/rebuild_cache.dir
 C:/Users/Mis/test123/central/build/nucleo_wb55rg/zephyr/drivers/CMakeFiles/edit_cache.dir
 C:/Users/Mis/test123/central/build/nucleo_wb55rg/zephyr/drivers/CMakeFiles/rebuild_cache.dir
 C:/Users/Mis/test123/central/build/nucleo_wb55rg/zephyr/drivers/disk/CMakeFiles/edit_cache.dir
