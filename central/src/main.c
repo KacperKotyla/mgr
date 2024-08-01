@@ -22,7 +22,7 @@
 #include <zephyr/types.h>
 #include <zephyr/sys/__assert.h>
 
-#include <soc.h>
+//#include <soc.h>
 // #include <stm32_ll_bar.h>
 
 #include <zephyr/bluetooth/att.h>
@@ -39,7 +39,7 @@ bool debug = true;
 
 // Peripherals P1 P2 P3 P4
 const char *addressArr[] = {
-	"02:80:E1:00:00:00",
+	"44:17:93:5E:39:E6",
 	"F7:3E:E2:EA:4B:AC",
 	"F5:E6:A8:F0:CC:21",
 	"EE:FC:B1:9C:E3:A2",
@@ -71,7 +71,7 @@ int addressIdx = 0;
 // 2 - RTT read (central: just before reading to getting frame with read data)
 // 3 - RTT indicate (peripheral: just before sending to getting ACK)
 // 4 - RTT notify (peripheral: send signal for central -> central starts time and waits for notify)
-int scenarioIdx = 1;
+int scenarioIdx = 3;
 bool write_handle_found = false;
 int write_handle = -1;
 timing_t start_time, end_time;

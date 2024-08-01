@@ -22,3 +22,17 @@ exit.c:(.text.exit+0x34): undefined reference to `_exit'
 collect2.exe: error: ld returned 1 exit status
 
 
+Determining if the include file xtensa/config/core-isa.h exists failed with the following output:
+Change Dir: C:/Users/Mis/test123/central/build/nucleo_wb55rg/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Mis/.zephyrtools/ninja/ninja.exe cmTC_59683 && [1/2] Building C object CMakeFiles/cmTC_59683.dir/CheckIncludeFile.c.obj
+FAILED: CMakeFiles/cmTC_59683.dir/CheckIncludeFile.c.obj 
+C:\Users\Mis\.zephyr_ide\toolchains\zephyr-sdk-0.16.6\arm-zephyr-eabi\bin\arm-zephyr-eabi-gcc.exe   -nostartfiles -nostdlib -isystem "c:/users/mis/.zephyr_ide/toolchains/zephyr-sdk-0.16.6/arm-zephyr-eabi/bin/../lib/gcc/arm-zephyr-eabi/12.2.0/include" -isystem "c:/users/mis/.zephyr_ide/toolchains/zephyr-sdk-0.16.6/arm-zephyr-eabi/bin/../lib/gcc/arm-zephyr-eabi/12.2.0/include-fixed" -Wl,--unresolved-symbols=ignore-in-object-files -Wl,--entry=0 -o CMakeFiles/cmTC_59683.dir/CheckIncludeFile.c.obj -c C:/Users/Mis/test123/central/build/nucleo_wb55rg/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+C:/Users/Mis/test123/central/build/nucleo_wb55rg/CMakeFiles/CMakeTmp/CheckIncludeFile.c:1:10: fatal error: xtensa/config/core-isa.h: No such file or directory
+    1 | #include <xtensa/config/core-isa.h>
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+ninja: build stopped: subcommand failed.
+
+
+
